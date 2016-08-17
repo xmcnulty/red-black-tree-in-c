@@ -52,17 +52,9 @@ void insert(Tree* tree, void *data, compare cFunc) {
 
     if (comparison == 0)
         return;
-    else if(comparison == -1)
-        res = insertLeft(ptr, node, cFunc);
     else
-        res = insertRight(ptr, node, cFunc);
-
-    if (res) {
-        //TODO: Balance tree.
-
-        tree->_size ++;
-    }
-
+		(comparison < 0) ? insertLeft(ptr, node, cFunc) : insertRight(ptr, node, cFunc);
+	
     return;
 }
 
@@ -71,6 +63,17 @@ int insertLeft(Node *ptr, Node *newNode, compare cFunc) {
     if(ptr->_left == NULL) { // insert to the left of ptr
         ptr->_left = newNode;
         newNode->_parent = ptr;
+        
+        // check that the tree has maintained the RB property.
+        if (ptr->_color != BLACK) {
+			// Get the parent's sibling
+			Node *pSibling = (ptr->_parent->_left == ptr) ? ptr->_parent->_right : ptr->_parent->_left;
+			
+			// Case A: Parent's sibling is black or null
+			if (!pSibling || pSibling->_color == BLACK) {
+				
+			}
+		}
 
         return 1;
     }
@@ -90,6 +93,11 @@ int insertRight(Node *ptr, Node *newNode, compare cFunc) {
     if(ptr->_right == NULL) { // insert to the right of ptr
         ptr->_right = newNode;
         newNode->_parent = ptr;
+        
+		// check that the tree has maintained the RB property.
+        if (newNode->_parent->_color != BLACK) {
+			
+		}
 
         return 1;
     }
