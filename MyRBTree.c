@@ -24,6 +24,11 @@ Node* initNode(void *data) {
 Tree* initTree() {
     Tree *tree = (Tree*) calloc(1, sizeof(Tree));
 
+    if (!tree) {
+        fprintf(stderr, "ERROR: Could not allocate Tree\n");
+        exit(-2);
+    }
+
 	return tree;
 }
 
