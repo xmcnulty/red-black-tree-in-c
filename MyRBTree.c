@@ -65,15 +65,8 @@ int insertLeft(Node *ptr, Node *newNode, compare cFunc) {
         newNode->_parent = ptr;
         
         // check that the tree has maintained the RB property.
-        if (ptr->_color != BLACK) {
-			// Get the parent's sibling
-			Node *pSibling = (ptr->_parent->_left == ptr) ? ptr->_parent->_right : ptr->_parent->_left;
-			
-			// Case A: Parent's sibling is black or null
-			if (!pSibling || pSibling->_color == BLACK) {
-				
-			}
-		}
+        if (ptr->_color != BLACK)
+			fixLeft(ptr);
 
         return 1;
     }
@@ -86,6 +79,26 @@ int insertLeft(Node *ptr, Node *newNode, compare cFunc) {
         return 0;
     else
         return (comparison < 0) ? insertLeft(ptr, newNode, cFunc) : insertRight(ptr, newNode, cFunc);
+}
+
+// fixes tree after left insert
+void fixLeft(Node *parent) {
+	// Get the parent's sibling
+	Node *pSibling = 0;
+	int parentIsLeft = 0; // boolean that checks if parent is the left child of it's parent.
+	
+	if (parent->_parent->_left == parent) {
+		pSibling = parent->_parent->_right;
+		parentIsLeft = 1;
+	} else {
+		pSibling = parent->_parent->_left;
+	}
+	
+	// if the sibling is black, need to do a rotation
+	if (pSibling->_color == BLACK) {
+		if (parentIsLeft) // do a single right rotation
+			singleRightRotate(parent);
+	}
 }
 
 // recursive function that inserts to the right of a node
@@ -110,6 +123,29 @@ int insertRight(Node *ptr, Node *newNode, compare cFunc) {
         return 0;
     else
         return (comparison < 0) ? insertLeft(ptr, newNode, cFunc) : insertRight(ptr, newNode, cFunc);
+}
+
+// single right rotation
+void singleRightRotate(Node *ptr) {
+	// ptr's old parent
+	Node *oldParent = ptr->_parent;
+	
+	// update ptr's parent.
+	ptr->_parent = oldParent->_parent;
+	
+	if (oldParent->_parent->_left == oldParent)
+		oldParent->_parent->_left = ptr;
+	else
+		oldParent->_parent->_right = ptr;
+		
+	// update oldParent to be rotated down and to the right of ptr
+	oldParent->_parent = ptr;
+	oldParent->_left = ptr->_right;
+	ptr->_right = oldParent;
+	
+	// update colors
+	ptr->_color = BLACK;
+	ptr->_right->_color = RED;
 }
 
 // query if a tree contains a value

@@ -41,3 +41,10 @@ int search(Tree* tree, void *data, compare cFunc);
 
 // recursive helper function for search
 int searchHelper(Node *ptr, void *data, compare cFunc);
+
+// fixes the red black tree after an insertion to the left.
+// the parent node is passed
+void fixLeft(Node *parent);
+
+// single right rotation
+void singleRightRotate(Node *ptr);
